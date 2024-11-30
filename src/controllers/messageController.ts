@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { processMessage } from "../services/messageService";
-import logger from "../utils/logger";
+import { logger, errorLogger } from "../utils/logger";
 
 export const handleMessage = async (
   req: Request,
@@ -18,6 +18,7 @@ export const handleMessage = async (
     res.status(200).json(response);
   } catch (error) {
     console.error("Error processing message:", error);
+    errorLogger.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

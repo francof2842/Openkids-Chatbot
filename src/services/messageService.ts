@@ -1,6 +1,6 @@
 import { IMessage } from "../models/Message";
 import { saveMessage } from "../repositories/messageRepository";
-import logger from "../utils/logger";
+import { logger } from "../utils/logger";
 
 export const processMessage = async (
   message: IMessage
