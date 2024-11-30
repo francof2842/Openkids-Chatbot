@@ -1,5 +1,5 @@
 {
-  "name": "Openkids-chatbot",
+  "name": "openkidschatbot",
   "version": "1.0.0",
   "description": "A Chatbot for OpenKids Platform",
   "main": "index.js",
