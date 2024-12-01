@@ -9,7 +9,7 @@ const app: Application = express();
 app.use(bodyParser.json());
 
 // Routes
-app.use("/api/messages", messageRoutes);
+app.use("/api", messageRoutes);
 
 // Database Connection
 const MONGO_URI =
