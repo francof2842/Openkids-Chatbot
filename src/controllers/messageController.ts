@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import messageService from "../services/messageService";
 import { logger, errorLogger } from "../utils/logger";
 import whatsappService from "../services/whatsappService";
+import { chatWithUser } from "../services/chatService";
 
 /* export const handleMessage = async (
   req: Request,
@@ -38,7 +38,14 @@ const receiveMessage = async (req: Request, res: Response) => {
 
       logger.info(`Received message from ${from}: ${text}`);
 
-      whatsappService.sendWhatsappMessage(from, `Tu mensaje fue: ${text}`);
+      // Send the message to chatGPT
+      const response = await chatWithUser(from, text);
+      logger.info(`Response from chatGPT: ${response}`);
+
+      whatsappService.sendWhatsappMessage(
+        from,
+        response ? response : "Lo siento, no entendi tu mensaje"
+      );
 
       // Store the message
       //await messageService.storeMessage({ sender: from, text: body });
@@ -105,7 +112,6 @@ function getTextUser(message: any) {
   } else {
     errorLogger.error("Message type not supported");
   }
-  logger.info(`Text: ${text}`);
   return text;
 }
 
