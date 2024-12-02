@@ -19,7 +19,7 @@ export async function saveConversation(
 }
 
 // Get conversation from database
-export async function getConversation(
+export async function getAllConversation(
   userId: string
 ): Promise<ChatCompletionMessageParam[] | null> {
   const conversation = await Conversation.findOne({ userId });
@@ -41,15 +41,19 @@ export async function getRecentConversation(
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   // Filter messages within the last 24 hours
-  const recentMessages = conversation.messages.filter(
+  /*   const recentMessages = conversation.messages.filter(
     (message): message is ChatCompletionMessageParam =>
       new Date(message.timestamp) >= twentyFourHoursAgo &&
       (message.role === "user" || message.role === "assistant")
-  );
+  ); */
+
+  const recentMessages = conversation.messages.slice(-4);
 
   if (recentMessages.length === 0) {
     return null; // No messages in the last 24 hours
   }
 
-  return recentMessages ? recentMessages : null;
+  return recentMessages
+    ? (recentMessages as ChatCompletionMessageParam[])
+    : null;
 }

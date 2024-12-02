@@ -1,11 +1,10 @@
 import OpenAI from "openai";
 import {
   saveConversation,
-  getConversation,
   getRecentConversation,
 } from "../utils/conversationUtils";
 import { ChatCompletionMessageParam } from "../utils/conversationUtils";
-import { logger } from "../utils/logger";
+import { systemMessageContent, knowledgeBase } from "../utils/rules";
 
 export async function chatWithUser(userId: string, userInput: string) {
   const openai = new OpenAI({
@@ -14,18 +13,18 @@ export async function chatWithUser(userId: string, userInput: string) {
 
   // Retrieve conversation history (only last 24 hours)
   const recentConversation = await getRecentConversation(userId);
-  const conversationHistory: ChatCompletionMessageParam[] = recentConversation
-    ? recentConversation
-    : [
-        {
-          role: "assistant",
-          content: "You are a helpful assistant.",
-          timestamp: new Date(),
-        }, // New conversation starter
-      ];
+
+  // Start with the system message and recent conversation or a blank slate
+  let conversationHistory: ChatCompletionMessageParam[] = [
+    {
+      role: "assistant",
+      content: `Sigue estas reglas SIEMPRE: ${systemMessageContent} y usa este documento para ayudarte: ${knowledgeBase}`,
+      timestamp: new Date(),
+    },
+    ...(recentConversation ? recentConversation : []),
+  ];
 
   // Add user's message to conversation history
-  logger.info(`userInput: ${userInput}`);
   conversationHistory.push({
     role: "user",
     content: userInput,
@@ -38,13 +37,9 @@ export async function chatWithUser(userId: string, userInput: string) {
     messages: conversationHistory,
   });
 
-  logger.info(`response: `);
-  logger.info(response);
-
   const assistantMessage = response.choices[0].message.content;
 
   if (assistantMessage) {
-    logger.info(`assistantMessage: ${assistantMessage}`);
     // Add assistant's message to conversation history
     conversationHistory.push({
       role: "assistant",

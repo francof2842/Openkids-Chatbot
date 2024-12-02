@@ -25,7 +25,6 @@ const sendWhatsappMessage = async (recipient: string, message: string) => {
     );
   } catch (error) {
     errorLogger.error(`Error sending message to ${recipient}: ${error}`);
-    // Handle the error appropriately here
   }
   logger.info(`Message sent to ${recipient}: ${message}`);
 };
