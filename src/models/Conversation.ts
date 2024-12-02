@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IConversation extends Document {
   userId: string; // To uniquely identify the user
-  messages: Array<{ role: string; content: string }>; // Stores the chat history
+  messages: Array<{ role: string; content: string; timestamp: Date }>; // Stores the chat history
 }
 
 const ConversationSchema: Schema = new Schema({
@@ -15,6 +15,7 @@ const ConversationSchema: Schema = new Schema({
         required: true,
       },
       content: { type: String, required: true },
+      timestamp: { type: Date, default: Date.now },
     },
   ],
 });
