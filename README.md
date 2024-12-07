@@ -45,4 +45,6 @@ Switch to the whatsapp-bot database:
 use whatsapp-bot
 ```
 
-1.
+Setup redis for caching the user request
+
+docker run --name redis -p 6379:6379 -d redis
